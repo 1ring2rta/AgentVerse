@@ -328,11 +328,12 @@ class OpenAIChat(BaseChatModel):
             )
         try:
             if functions != []:
-                response = await async_openai_client.chat.completions.create(
-                    messages=messages,
-                    functions=functions,
-                    **self.args.dict(),
-                )
+                async with async_openai_client:   
+                    response = await async_openai_client.chat.completions.create(
+                        messages=messages,
+                        functions=functions,
+                        **self.args.dict(),
+                    )
                 logger.log_prompt(
                     [
                         {
@@ -408,11 +409,11 @@ class OpenAIChat(BaseChatModel):
                     )
 
             else:
-
-                response = await async_openai_client.chat.completions.create(
-                    messages=messages,
-                    **self.args.dict(),
-                )
+                async with async_openai_client:
+                    response = await async_openai_client.chat.completions.create(
+                        messages=messages,
+                        **self.args.dict(),
+                    )
                 self.collect_metrics(response)
                 logger.log_prompt(
                     [
